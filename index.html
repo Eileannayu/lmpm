@@ -5,102 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>肝癌转移预测</title>
   <style>
+    /* 样式部分保持不变 */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #F5F5F5; /* 浅灰色背景 */
+      background-color: #ebecf8;
     }
     .navbar {
-      background-color: #c0e2f7; /* 导航栏 */
+      background-color: #ebecf8;
       overflow: hidden;
-      padding: 14px 20px;
+      position: relative;
     }
     .navbar a {
       float: left;
-      color: #FFFFFF; /* 白色字体 */
+      display: block;
+      color: #5e5e5e;
       text-align: center;
+      padding: 14px 20px;
       text-decoration: none;
+      position: relative;
+    }
+    .navbar a:hover, .navbar a:focus {
+      background-color: #e6e3ec;
+      color: black;
+    }
+    .navbar a:hover::after, .navbar a:focus::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #846be0;
     }
     .container {
       display: flex;
-      max-width: 1400px; /* 增加表单整体宽度 */
+      max-width: 1200px;
       margin: 20px auto;
       gap: 20px;
     }
-    /* 白色背景表单区域 */
     .side {
-      flex: 2;
-      background-color: #FFFFFF; /* 白色背景 */
+      flex: 1;
+      background-color: #f3f4f9;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(222, 223, 246, 0.5);
+    }
+    .main {
+      flex: 1.2;
+    }
+    .card {
+      background-color: #fff;
+      margin-bottom: 20px;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+      box-shadow: 0 4px 15px rgba(222, 223, 246, 0.5), 0 2px 10px rgba(227, 228, 249, 0.5);
     }
     .form-group {
       display: flex;
-      justify-content: flex-start; /* 确保左对齐 */
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
     }
     label {
-      flex: 3; /* 调整 label 宽度，使其文字完整显示 */
-      color: #4A4A4A; /* 深灰色文本 */
       margin-right: 10px;
-      white-space: nowrap; /* 保证label不换行 */
+      white-space: nowrap;
     }
     select {
-      flex: 2.5; /* 增加 select 宽度 */
       padding: 8px;
-      border: 1px solid #ccc;
+      border: 1px solid #cccccc;
       border-radius: 4px;
-      width: 100%;
+      width: 200px;
       text-align: left;
     }
-    select:focus {
-      outline: none;
-      background-color: #c0e2f7; /* 聚焦时背景变浅绿色 */
-    }
     button {
-      padding: 10px;
-      width: 100%;
-      background-color: #afdefb; /* 按钮浅绿色 */
-      color: white;
+      padding: 10px 20px;
       border: none;
+      background-color: #846be0;
+      color: white;
       border-radius: 4px;
       cursor: pointer;
+      display: block;
+      width: 100%;
+      margin: 20px auto;
       transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #afdefb /* 按钮悬停时变深绿色 */
+      background-color: #6e54c4;
     }
-    /* 右侧对话框样式结果显示区域 */
+    #predictionResult {
+      background-color: #fff;
+    }
     .right-side {
-      flex: 2;
       display: flex;
       flex-direction: column;
-      background-color: #FFFFFF;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
     }
-    .chat-box {
-      background-color: #F5F5F5; /* 浅灰色对话框背景 */
-      border: 1px solid #cee3f8; /* 浅绿色边框 */
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 20px;
+    #prediction-chart {
+      margin-top: 20px;
       max-width: 100%;
-      word-wrap: break-word;
-    }
-    .chat-box p {
-      margin: 0;
+      height: auto;
+      display: none;
     }
     .highlight {
-      background-color:  #cee3f8; /* 高亮浅绿色 */
+      background-color: #e6e3ec;
     }
   </style>
 </head>
 <body>
+
 
   <div class="navbar">
     <a href="#"><img src="/static/images/cancer.png" alt="Cancer Icon" width="20"> 肝癌转移预测</a>
@@ -212,12 +226,16 @@
   </div>
 
   <!-- 对话框样式预测结果区域 -->
-  <div class="right-side">
-    <div class="chat-box">
-      <p><strong>提示:</strong> 选择临床特征参数点击“预测”，即可生成风险概率预测图。</p>
+  <div class="side right-side">
+    <div class="card">
+      <h3>操作提示</h3>
+      <p>选择临床特征参数点击“预测”，即可在下方生成风险概率预测图。</p>
     </div>
-    <div class="chat-box" id="prediction-result-box">
-      <p id="prediction-result">预测结果将显示在这里。</p>
+    <div class="card" id="predictionResult">
+      <h3>预测结果</h3>
+      <p>本结果仅供参考</p>
+      <p id="prediction-result">预测结果会显示在这里。</p>
+      <img id="prediction-chart" class="chart" alt="Prediction Chart">
     </div>
   </div>
 </div>
