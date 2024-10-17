@@ -44,20 +44,17 @@ def predict():
 
         # 将输入数据转化为模型输入格式
         input_data_df = pd.DataFrame([list(input_data.values())], columns=input_data.keys())
-        input_data_df = input_data_df.astype('category')
 
-        # 确保输入数据的列顺序
+        # 确保列顺序与模型训练时保持一致
         desired_order = ['Sex', 'T_Stage', 'N_Stage', 'Age_Group',
-                        'Primary_Site_Category', 'Grade_Group',
-                        'Tumor_histology', 'Tumor_size',
-                        'Number_of_nodes_examined', 'Surgery_Combined',
-                        'Primary_tumor']
+                         'Primary_Site_Category', 'Grade_Group',
+                         'Tumor_histology', 'Tumor_size',
+                         'Number_of_nodes_examined', 'Surgery_Combined',
+                         'Primary_tumor']
 
-        try:
-            input_data_df = input_data_df[desired_order]
-        except KeyError as e:
-            return jsonify({'error': f"缺少必要的输入字段: {str(e)}"})
+        input_data_df = input_data_df[desired_order]  # 按训练数据的顺序排列列
 
+        # 将输入数据转换为 NumPy 数组
         input_data_array = input_data_df.values
 
         # 将 NumPy 数组转换为 XGBoost 的 DMatrix 格式
@@ -65,45 +62,21 @@ def predict():
 
         # 使用模型进行预测
         prediction = model.predict(dmatrix_data)
-        prediction_proba = model.predict_proba(dmatrix_data)
 
-        metastasis_proba = float(prediction_proba[0][1]) * 100
+        # 根据预测值生成概率结果
+        metastasis_proba = float(prediction[0]) * 100
 
-        # 绘制极坐标图
-        fig, ax = plt.subplots(figsize=(0.7, 0.7), subplot_kw={'projection': 'polar'})
-        data = metastasis_proba
-        startangle = 90
-        x = (data * 2 * pi) / 100
-        left = (startangle * pi * 2) / 360
-
-        plt.xticks([])
-        plt.yticks([])
-        ax.spines.clear()
-
-        ax.barh(1, 360, left=360, height=1, color='#CCCCCC')
-        ax.barh(1, x, left=left, height=1, color='#846be0')
-        ax.scatter(x + left, 1, s=7, color='#846be0', zorder=2)
-        ax.scatter(left,1, s=7, color='#846be0', zorder=2)
-        plt.ylim(-3, 3)
-        plt.text(0, -2.5, f"{metastasis_proba:.1f}%", ha='center', va='center', fontsize=4)
-
-        img = io.BytesIO()
-        plt.savefig(img, dpi=300 , format='PNG', bbox_inches='tight', facecolor='none', edgecolor='none' )
-        img.seek(0)
-        plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-        plt.close()
-
+        # 返回预测结果
         response = {
-            "metastasis_proba": metastasis_proba,  # 预测概率
-            "plot_url": plot_url,  # base64编码的图片
-            "prediction": int(prediction[0])  # 预测结果
+            "metastasis_proba": metastasis_proba,
+            "prediction": int(prediction[0])
         }
 
         return jsonify(response)
 
     except Exception as e:
-        # 捕获所有异常并返回错误消息
         return jsonify({'error': f"预测过程中发生错误: {str(e)}"})
+
 
 
 if __name__ == "__main__":
