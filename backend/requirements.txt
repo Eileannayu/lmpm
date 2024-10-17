@@ -1,0 +1,9 @@
+Flask
+joblib
+matplotlib
+pandas
+numpy
+xgboost
+flask-cors
+wheel
+gunicorn

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>肝癌转移预测</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F5F5F5; /* 浅灰色背景 */
+    }
+    .navbar {
+      background-color: #c0e2f7; /* 导航栏 */
+      overflow: hidden;
+      padding: 14px 20px;
+    }
+    .navbar a {
+      float: left;
+      color: #FFFFFF; /* 白色字体 */
+      text-align: center;
+      text-decoration: none;
+    }
+    .container {
+      display: flex;
+      max-width: 1400px; /* 增加表单整体宽度 */
+      margin: 20px auto;
+      gap: 20px;
+    }
+    /* 白色背景表单区域 */
+    .side {
+      flex: 2;
+      background-color: #FFFFFF; /* 白色背景 */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+    }
+    .form-group {
+      display: flex;
+      justify-content: flex-start; /* 确保左对齐 */
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    label {
+      flex: 3; /* 调整 label 宽度，使其文字完整显示 */
+      color: #4A4A4A; /* 深灰色文本 */
+      margin-right: 10px;
+      white-space: nowrap; /* 保证label不换行 */
+    }
+    select {
+      flex: 2.5; /* 增加 select 宽度 */
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+      text-align: left;
+    }
+    select:focus {
+      outline: none;
+      background-color: #c0e2f7; /* 聚焦时背景变浅绿色 */
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background-color: #afdefb; /* 按钮浅绿色 */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #afdefb /* 按钮悬停时变深绿色 */
+    }
+    /* 右侧对话框样式结果显示区域 */
+    .right-side {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      background-color: #FFFFFF;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+    }
+    .chat-box {
+      background-color: #F5F5F5; /* 浅灰色对话框背景 */
+      border: 1px solid #cee3f8; /* 浅绿色边框 */
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    .chat-box p {
+      margin: 0;
+    }
+    .highlight {
+      background-color:  #cee3f8; /* 高亮浅绿色 */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <a href="#"><img src="/static/images/cancer.png" alt="Cancer Icon" width="20"> 肝癌转移预测</a>
+    <a href="#"><img src="/static/images/email.png" alt="Email Icon" width="20"> 联系方式</a>
+  </div>
+  
+
+<div class="container">
+  <!-- 白色背景表单区域 -->
+  <div class="side main">
+    <form id="prediction-form">
+      <div class="form-group">
+        <label for="Sex">性别 (Sex):</label>
+        <select name="Sex" id="Sex" required>
+          <option value="">请选择</option>
+          <option value="0">Female</option>
+          <option value="1">Male</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="T_Stage">T期 (T Stage):</label>
+        <select name="T_Stage" id="T_Stage" required>
+          <option value="">请选择</option>
+          <option value="0">T1/T2</option>
+          <option value="1">T3/T4</option>
+          <option value="2">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="N_Stage">N期 (N Stage):</label>
+        <select name="N_Stage" id="N_Stage" required>
+          <option value="">请选择</option>
+          <option value="0">N0</option>
+          <option value="1">N1/N2</option>
+          <option value="2">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Age_Group">年龄组 (Age Group):</label>
+        <select name="Age_Group" id="Age_Group" required>
+          <option value="">请选择</option>
+          <option value="0">20-49</option>
+          <option value="1">50-69</option>
+          <option value="2">>=70</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Primary_Site_Category">原发部位类别 (Primary Site Category):</label>
+        <select name="Primary_Site_Category" id="Primary_Site_Category" required>
+          <option value="">请选择</option>
+          <option value="0">Intrahepatic bile duct</option>
+          <option value="1">Liver</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Grade_Group">分级组 (Grade Group):</label>
+        <select name="Grade_Group" id="Grade_Group" required>
+          <option value="">请选择</option>
+          <option value="0">Grade I/II</option>
+          <option value="1">Grade III/IV</option>
+          <option value="2">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Tumor_histology">肿瘤组织学 (Tumor histology):</label>
+        <select name="Tumor_histology" id="Tumor_histology" required>
+          <option value="">请选择</option>
+          <option value="0">8170/3: Hepatocellular carcinoma, NOS</option>
+          <option value="1">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Tumor_size">肿瘤大小 (Tumor size):</label>
+        <select name="Tumor_size" id="Tumor_size" required>
+          <option value="">请选择</option>
+          <option value="0">0-2cm</option>
+          <option value="1">2-5cm</option>
+          <option value="2">>5cm</option>
+          <option value="3">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Number_of_nodes_examined">检查的淋巴结数量 (Number of nodes examined):</label>
+        <select name="Number_of_nodes_examined" id="Number_of_nodes_examined" required>
+          <option value="">请选择</option>
+          <option value="0">&lt;12</option>
+          <option value="1">&gt;=12</option>
+          <option value="2">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Surgery_Combined">手术情况 (Surgery):</label>
+        <select name="Surgery_Combined" id="Surgery_Combined" required>
+          <option value="">请选择</option>
+          <option value="0">No/Unknown</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Primary_tumor">原发肿瘤 (Primary tumor):</label>
+        <select name="Primary_tumor" id="Primary_tumor" required>
+          <option value="">请选择</option>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+      <button type="submit" id="submit-btn">预测</button>
+    </form>
+  </div>
+
+  <!-- 对话框样式预测结果区域 -->
+  <div class="right-side">
+    <div class="chat-box">
+      <p><strong>提示:</strong> 选择临床特征参数点击“预测”，即可生成风险概率预测图。</p>
+    </div>
+    <div class="chat-box" id="prediction-result-box">
+      <p id="prediction-result">预测结果将显示在这里。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const predictionForm = document.getElementById('prediction-form');
+
+    // Function to remove highlight from all form groups
+    const removeHighlight = () => {
+      document.querySelectorAll('.form-group').forEach(function(group) {
+        group.classList.remove('highlight');
+      });
+    };
+
+    // Function to add highlight to the selected form group
+    const addHighlight = (target) => {
+      removeHighlight();
+      target.classList.add('highlight');
+    };
+
+    // Event listener for select elements
+    const selectElements = document.querySelectorAll('select');
+    selectElements.forEach(function(select) {
+      select.addEventListener('change', function() {
+        const parentFormGroup = this.closest('.form-group');
+        addHighlight(parentFormGroup);
+      });
+    });
+
+    predictionForm.onsubmit = function(event) {
+      event.preventDefault();
+      const formData = new FormData(predictionForm);
+
+      // 打印表单数据用于调试
+      for (let pair of formData.entries()) {
+        console.log(pair[0]+ ': ' + pair[1]);
+      }
+
+      // 更新 fetch 请求，指向你的 Vercel 后端
+      fetch('https://eileannayu-github-io.onrender.com/predict', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('网络响应错误，状态码: ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('后端返回数据：', data); // 调试用
+        if (data.error) {
+          document.getElementById('prediction-result').textContent = data.error;
+          document.getElementById('prediction-chart').style.display = 'none';
+        } else {
+          document.getElementById('prediction-result').textContent = `转移概率: ${data.metastasis_proba.toFixed(2)}%`;
+          const chartImage = document.getElementById('prediction-chart');
+          chartImage.src = `data:image/png;base64,${data.plot_url}`;
+          chartImage.style.display = 'block';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('prediction-result').textContent = '预测出错，请稍后再试。';
+        document.getElementById('prediction-chart').style.display = 'none';
+      });
+    };
+  });
+</script>
+
+</body>
+</html>
