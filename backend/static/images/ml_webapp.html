@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Colorectal Cancer Distant Metastasis Risk Prediction Model</title>
+  <title>结直肠癌转移预测</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
   <style>
-    /* 样式部分保持不变 */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -116,52 +116,52 @@
 <body>
 
 <div class="navbar">
-  <a href="#"><img src="/static/images/cancer.png" alt="Cancer Icon" width="20"> 结直肠癌转移预测</a>
-  <a href="#"><img src="/static/images/email.png" alt="Email Icon" width="20"> 联系方式</a>
+  <a href="#"><img src="images/cancer.png" alt="Cancer Icon" width="20"> 结直肠癌转移预测</a>
+  <a href="#"><img src="images/email.png" alt="email Icon" width="20"> 联系方式</a>
 </div>
 
 <div class="container">
   <div class="side main">
     <form id="prediction-form">
       <div class="form-group">
-        <label for="Sex">Sex:</label>
+        <label for="Sex">性别 (Sex):</label>
         <select name="Sex" id="Sex" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">Female</option>
           <option value="1">Male</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="T_Stage">T Stage:</label>
+        <label for="T_Stage">T期 (T Stage):</label>
         <select name="T_Stage" id="T_Stage" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">T1/T2</option>
           <option value="1">T3/T4</option>
           <option value="2">Unknown</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="N_Stage">N Stage:</label>
+        <label for="N_Stage">N期 (N Stage):</label>
         <select name="N_Stage" id="N_Stage" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">N0</option>
           <option value="1">N1/N2</option>
           <option value="2">Unknown</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Age_Group">Age Group:</label>
+        <label for="Age_Group">年龄组 (Age Group):</label>
         <select name="Age_Group" id="Age_Group" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">20-49</option>
           <option value="1">50-69</option>
           <option value="2">>=70</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Primary_Site_Category">Primary Site Category:</label>
+        <label for="Primary_Site_Category">原发部位类别 (Primary Site Category):</label>
         <select name="Primary_Site_Category" id="Primary_Site_Category" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">Colon, NOS</option>
           <option value="1">Left Colon</option>
           <option value="2">Rectum</option>
@@ -171,26 +171,26 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="Grade_Group">Grade Group:</label>
+        <label for="Grade_Group">分级组 (Grade Group):</label>
         <select name="Grade_Group" id="Grade_Group" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">Grade I/II</option>
           <option value="1">Grade III/IV</option>
           <option value="2">Unknown</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Tumor_histology">Tumor histology:</label>
+        <label for="Tumor_histology">肿瘤组织学 (Tumor histology):</label>
         <select name="Tumor_histology" id="Tumor_histology" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">Other</option>
           <option value="1">Adenocarcinomas</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Tumor_size">Tumor size:</label>
+        <label for="Tumor_size">肿瘤大小 (Tumor size):</label>
         <select name="Tumor_size" id="Tumor_size" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">0-2cm</option>
           <option value="1">2-5cm</option>
           <option value="2">>5cm</option>
@@ -198,43 +198,43 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="Number_of_nodes_examined">Number of nodes examined:</label>
+        <label for="Number_of_nodes_examined">检查的淋巴结数量 (Number of nodes examined):</label>
         <select name="Number_of_nodes_examined" id="Number_of_nodes_examined" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">&lt;12</option>
           <option value="1">&gt;=12</option>
           <option value="2">Unknown</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Surgery_Combined">Surgery:</label>
+        <label for="Surgery_Combined">手术情况 (Surgery):</label>
         <select name="Surgery_Combined" id="Surgery_Combined" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">No/Unknown</option>
           <option value="1">Yes</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="Primary_tumor">Primary tumor:</label>
+        <label for="Primary_tumor">原发肿瘤 (Primary tumor):</label>
         <select name="Primary_tumor" id="Primary_tumor" required>
-          <option value="">Select an option</option>
+          <option value="">请选择</option>
           <option value="0">No</option>
           <option value="1">Yes</option>
         </select>
       </div>
-      <button type="submit" id="submit-btn">Predict</button>
+      <button type="submit" id="submit-btn">预测</button>
     </form>
   </div>
   
   <div class="side right-side">
     <div class="card">
-      <h3>Operation Instructions</h3>
-      <p>Select clinical feature parameters and click "Predict" to generate the risk probability prediction chart below.</p>
+      <h3>操作提示</h3>
+      <p>选择临床特征参数点击“预测”，即可在下方生成风险概率预测图。</p>
     </div>
     <div class="card" id="predictionResult">
-      <h3>Prediction Result</h3>
-      <p>This result is for reference only.</p>
-      <p id="prediction-result">The prediction result will be displayed here.</p>
+      <h3>预测结果</h3>
+      <p>本结果仅供参考</p>
+      <p id="prediction-result">预测结果会显示在这里。</p>
       <img id="prediction-chart" class="chart" alt="Prediction Chart">
     </div>
   </div>
@@ -270,27 +270,15 @@
       event.preventDefault();
       const formData = new FormData(predictionForm);
 
-      // 打印表单数据用于调试
-      for (let pair of formData.entries()) {
-        console.log(pair[0]+ ': ' + pair[1]);
-      }
-
-      // 更新 fetch 请求，指向你的 Vercel 后端
-      fetch('https://eileannayu-github-io.onrender.com/predict', {
+      // Update the fetch URL to point to your Vercel backend
+      fetch('https://eileannayu-github-gg02dxe5f-eileannayus-projects.vercel.app/predict', {
         method: 'POST',
         body: formData
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('网络响应错误，状态码: ' + response.status);
-        }
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
-        console.log('后端返回数据：', data); // 调试用
         if (data.error) {
           document.getElementById('prediction-result').textContent = data.error;
-          document.getElementById('prediction-chart').style.display = 'none';
         } else {
           document.getElementById('prediction-result').textContent = `转移概率: ${data.metastasis_proba.toFixed(2)}%`;
           const chartImage = document.getElementById('prediction-chart');
@@ -301,7 +289,6 @@
       .catch(error => {
         console.error('Error:', error);
         document.getElementById('prediction-result').textContent = '预测出错，请稍后再试。';
-        document.getElementById('prediction-chart').style.display = 'none';
       });
     };
   });
