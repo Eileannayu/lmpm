@@ -7,6 +7,7 @@ import io
 import base64
 from math import pi
 import os
+import xgboost as xgb
 
 app = Flask(__name__, static_folder='static')
 
@@ -17,9 +18,6 @@ model = joblib.load('backend/xgboost_model.pkl')
 def index():
     # 返回根目录中的 index.html
     return send_from_directory('../', 'index.html')
-
-
-import xgboost as xgb
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -103,6 +101,8 @@ def predict():
     except Exception as e:
         # 捕获所有异常并返回错误消息
         return jsonify({'error': f"预测过程中发生错误: {str(e)}"})
+
+
 
 
 if __name__ == "__main__":
