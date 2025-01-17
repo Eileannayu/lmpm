@@ -5,198 +5,233 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Liver Cancer Distant Metastasis Risk Prediction Model</title>
   <style>
+    /* 样式部分 */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
+      background-color: #f6f8fa; /* 浅蓝色背景 */
     }
     .navbar {
-      background-color: #333;
-      color: #fff;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background-color: #9aa7d8 /* 蓝色导航栏 */
+      overflow: hidden;
+      position: relative;
     }
     .navbar a {
-      color: #fff;
+      float: top;
+      display: block;
+      color: #3f3f41; /* 导航文字白色 */
+      background-color: #bdd9eb;
+      text-align: center;
+      padding: 14px 20px;
       text-decoration: none;
-      padding: 10px 15px;
-      transition: background-color 0.3s;
+      position: relative;
     }
-    .navbar a:hover {
-      background-color: #555;
+    .navbar a:hover, .navbar a:focus {
+      background-color: #b3d4fc; /* 悬停时更深的蓝色 */
+      color:#d1ecf1 ;
+    }
+    .navbar a:hover::after, .navbar a:focus::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #d1ecf1; /* 悬停时的线条颜色 */
     }
     .container {
+      display: flex;
+  
       max-width: 1200px;
       margin: 20px auto;
-      display: flex;
       gap: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .side {
       flex: 1;
-      background-color: #fff;
+      background-color: #d1ecf1; /* 浅蓝色侧边栏 */
       padding: 20px;
+      margin: 10px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(173, 236, 241, 0.5);
     }
     .main {
       flex: 1.2;
     }
-    .form-group {
+    .card {
+      background-color: #fff;
       margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(173, 236, 241, 0.5), 0 2px 10px rgba(202, 239, 246, 0.5);
+    }
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     }
     label {
-      display: block;
-      margin-bottom: 5px;
+      margin-right: 10px;
+      white-space: nowrap;
     }
-    select, button {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
+    select {
+      padding: 8px;
+      border: 1px solid #b3d4fc; /* 蓝色边框 */
       border-radius: 4px;
-      font-size: 16px;
+      width: 200px;
+      text-align: left;
     }
     button {
-      background-color: #333;
-      color: #fff;
+      padding: 10px 20px;
       border: none;
+      background-color: #d1ecf1; /* 蓝色按钮 */
+      color: #3f3f41;
+      border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      display: block;
+      width: 100%;
+      margin: 20px auto;
+      transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #555;
+      background-color: #b3d4fc; /* 按钮悬停更深的蓝色 */
     }
-    .card {
+    #predictionResult {
+      background-color: #fff;
+    }
+    .right-side {
+      display: flex;
+      flex-direction: column;
+    }
+    #prediction-chart {
       margin-top: 20px;
-      padding: 20px;
-      border-top: 1px solid #eee;
-    }
-    .card h3 {
-      margin-top: 0;
-    }
-    .chart {
       max-width: 100%;
       height: auto;
-      margin-top: 20px;
+      display: none;
+    }
+    .highlight {
+      background-color: #b3d4fc; /* 浅蓝色高亮 */
     }
   </style>
 </head>
 <body>
   <div class="navbar">
     <a href="#"><img src="/static/images/cancer.png" alt="Cancer Icon" width="20"> Liver Cancer Metastasis Prediction</a>
-    <a href="#"><img src="/static/images/email.png" alt="Email Icon" width="20"> Contact</a>
   </div>
+
   <div class="container">
-    <form id="prediction-form">
-      <div class="form-group">
-        <label for="Sex">Sex:</label>
-        <select name="Sex" id="Sex" required>
-          <option value="">Select an option</option>
-          <option value="0">Female</option>
-          <option value="1">Male</option>
-        </select>
+    <div class="main">
+      <form id="prediction-form">
+        <div class="form-group">
+          <label for="Sex">Sex:</label>
+          <select name="Sex" id="Sex" required>
+            <option value="">Select an option</option>
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="T_Stage">T Stage:</label>
+          <select name="T_Stage" id="T_Stage" required>
+            <option value="">Select an option</option>
+            <option value="0">T1/T2</option>
+            <option value="1">T3/T4</option>
+            <option value="2">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="N_Stage">N Stage:</label>
+          <select name="N_Stage" id="N_Stage" required>
+            <option value="">Select an option</option>
+            <option value="0">N0</option>
+            <option value="1">N1/N2</option>
+            <option value="2">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Age_Group">Age Group:</label>
+          <select name="Age_Group" id="Age_Group" required>
+            <option value="">Select an option</option>
+            <option value="0">20-49</option>
+            <option value="1">50-69</option>
+            <option value="2">>=70</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Primary_Site_Category">Primary Site Category:</label>
+          <select name="Primary_Site_Category" id="Primary_Site_Category" required>
+            <option value="">Select an option</option>
+            <option value="0">Intrahepatic bile duct</option>
+            <option value="1">Liver</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Grade_Group">Grade Group:</label>
+          <select name="Grade_Group" id="Grade_Group" required>
+            <option value="">Select an option</option>
+            <option value="0">Grade I/II</option>
+            <option value="1">Grade III/IV</option>
+            <option value="2">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Tumor_histology">Tumor histology:</label>
+          <select name="Tumor_histology" id="Tumor_histology" required>
+            <option value="">Select an option</option>
+            <option value="0">8170/3: Hepatocellular carcinoma, NOS</option>
+            <option value="1">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Tumor_size">Tumor size:</label>
+          <select name="Tumor_size" id="Tumor_size" required>
+            <option value="">Select an option</option>
+            <option value="0">0-2cm</option>
+            <option value="1">2-5cm</option>
+            <option value="2">>5cm</option>
+            <option value="3">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Number_of_nodes_examined">Number of nodes examined:</label>
+          <select name="Number_of_nodes_examined" id="Number_of_nodes_examined" required>
+            <option value="">Select an option</option>
+            <option value="0">&lt;12</option>
+            <option value="1">&gt;=12</option>
+            <option value="2">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Surgery_Combined">Surgery:</label>
+          <select name="Surgery_Combined" id="Surgery_Combined" required>
+            <option value="">Select an option</option>
+            <option value="0">No/Unknown</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Primary_tumor">Primary tumor:</label>
+          <select name="Primary_tumor" id="Primary_tumor" required>
+            <option value="">Select an option</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <button type="submit" id="submit-btn">Predict</button>
+      </form>
+    </div>
+    <div class="side right-side">
+      <div class="card">
+        <h3>Operation Instructions</h3>
+        <p>Select clinical feature parameters and click "Predict" to generate the risk probability prediction chart below.</p>
       </div>
-      <div class="form-group">
-        <label for="T_Stage">T Stage:</label>
-        <select name="T_Stage" id="T_Stage" required>
-          <option value="">Select an option</option>
-          <option value="0">T1/T2</option>
-          <option value="1">T3/T4</option>
-          <option value="2">Unknown</option>
-        </select>
+      <div class="card" id="predictionResult">
+        <h3>Prediction Result</h3>
+        <p>This result is for reference only.</p>
+        <p id="prediction-result">The prediction result will be displayed here.</p>
+        <img id="prediction-chart" class="chart" alt="Prediction Chart">
       </div>
-      <div class="form-group">
-        <label for="N_Stage">N Stage:</label>
-        <select name="N_Stage" id="N_Stage" required>
-          <option value="">Select an option</option>
-          <option value="0">N0</option>
-          <option value="1">N1/N2</option>
-          <option value="2">Unknown</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Age_Group">Age Group:</label>
-        <select name="Age_Group" id="Age_Group" required>
-          <option value="">Select an option</option>
-          <option value="0">20-49</option>
-          <option value="1">50-69</option>
-          <option value="2">>=70</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Primary_Site_Category">Primary Site Category:</label>
-        <select name="Primary_Site_Category" id="Primary_Site_Category" required>
-          <option value="">Select an option</option>
-          <option value="0">Intrahepatic bile duct</option>
-          <option value="1">Liver</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Grade_Group">Grade Group:</label>
-        <select name="Grade_Group" id="Grade_Group" required>
-          <option value="">Select an option</option>
-          <option value="0">Grade I/II</option>
-          <option value="1">Grade III/IV</option>
-          <option value="2">Unknown</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Tumor_histology">Tumor histology:</label>
-        <select name="Tumor_histology" id="Tumor_histology" required>
-          <option value="">Select an option</option>
-          <option value="0">8170/3: Hepatocellular carcinoma, NOS</option>
-          <option value="1">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Tumor_size">Tumor size:</label>
-        <select name="Tumor_size" id="Tumor_size" required>
-          <option value="">Select an option</option>
-          <option value="0">0-2cm</option>
-          <option value="1">2-5cm</option>
-          <option value="2">>5cm</option>
-          <option value="3">Unknown</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Number_of_nodes_examined">Number of nodes examined:</label>
-        <select name="Number_of_nodes_examined" id="Number_of_nodes_examined" required>
-          <option value="">Select an option</option>
-          <option value="0">&lt;12</option>
-          <option value="1">&gt;=12</option>
-          <option value="2">Unknown</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Surgery_Combined">Surgery:</label>
-        <select name="Surgery_Combined" id="Surgery_Combined" required>
-          <option value="">Select an option</option>
-          <option value="0">No/Unknown</option>
-          <option value="1">Yes</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Primary_tumor">Primary tumor:</label>
-        <select name="Primary_tumor" id="Primary_tumor" required>
-          <option value="">Select an option</option>
-          <option value="0">No</option>
-          <option value="1">Yes</option>
-        </select>
-      </div>
-      <button type="submit" id="submit-btn">Predict</button>
-    </form>
-    <div class="card" id="predictionResult">
-      <h3>Prediction Result</h3>
-      <p>This result is for reference only.</p>
-      <p id="prediction-result">The prediction result will be displayed here.</p>
-      <img id="prediction-chart" class="chart" alt="Prediction Chart" style="display: none;">
     </div>
   </div>
 
@@ -234,7 +269,7 @@
       for (let pair of formData.entries()) {
         console.log(pair[0]+ ': ' + pair[1]);
       }
-
+      
       // 更新 fetch 请求，指向你的 Vercel 后端
       fetch('https://lmpm.onrender.com/predict', {
         method: 'POST',
@@ -252,7 +287,7 @@
           document.getElementById('prediction-result').textContent = data.error;
           document.getElementById('prediction-chart').style.display = 'none';
         } else {
-          document.getElementById('prediction-result').textContent = `转移概率: ${data.metastasis_proba.toFixed(2)}%`;
+          document.getElementById('prediction-result').textContent = `The risk probability of metastasis is:  ${data.metastasis_proba.toFixed(2)}%`;
           const chartImage = document.getElementById('prediction-chart');
           chartImage.src = `data:image/png;base64,${data.plot_url}`;
           chartImage.style.display = 'block';
